@@ -1,55 +1,30 @@
-name: Generate Snake
+name: Generate Snake Game
 
 on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
   schedule:
-    # Every minute (for testing; change to '0 */6 * * *' for every 6 hours)
-        - cron: '* * * * *'  # Runs every 5 minutes
-  workflow_dispatch: # Allows manual triggering of the workflow
+    - cron: '0 0 * * *'  # Runs every day at midnight UTC
 
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  generate:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks repo under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      # Generates the snake  
-      - uses: Platane/snk@master
-        id: snake-gif
-        with:
-          github_user_name: Shiv1309  # Use your GitHub username without '@'
-          # these next 2 lines generate the files on a branch called "output". This keeps the main branch from cluttering up.
-          gif_out_path: dist/github-contribution-grid-snake.gif
-          svg_out_path: dist/github-contribution-grid-snake.svg
+    - name: Generate contribution snake
+      uses: Platane/snk@v3
+      with:
+        github_user_name: ${{ github.repository_owner }}
+        outputs: |
+          dist/github-snake.svg
+          dist/github-snake-dark.svg?palette=github-dark
+          dist/ocean.gif?color_snake=orange&color_dots=#bfd6f6,#8dbdff,#64a1f4,#4b91f1,#3c7dd9
 
-      # Show the status of the build. Makes it easier for debugging (if there's any issues).
-      - run: git status
-
-      # Commit changes to the output branch
-      - name: Commit changes
-        run: |
-          git config --local user.email "shivsingh1309@gmail.com"  # Your email
-          git config --local user.name "Shiv Kumar Singh"  # Your name
-          git add dist/github-contribution-grid-snake.gif dist/github-contribution-grid-snake.svg
-          git commit -m "Update contribution snake" || echo "No changes to commit"
-
-      # Push the changes to the output branch
-      - name: Push changes to output branch
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: output  # Push to the output branch
-          force: true
-
-      # Deploy to GitHub Pages
-      - name: Deploy to GitHub Pages
-        uses: crazy-max/ghaction-github-pages@v2.1.3
-        with:
-          target_branch: output  # The branch where the snake files are pushed
-          build_dir: dist
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # Optionally, you can add steps here to push these generated files or deploy them to GitHub Pages.
