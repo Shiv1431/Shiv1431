@@ -2,8 +2,8 @@ name: Generate Snake
 
 on:
   schedule:
-    # Every 6 hours
-    - cron: "0 */6 * * *"
+    # Every minute (for testing; change to '0 */6 * * *' for every 6 hours)
+        - cron: '* * * * *'  # Runs every 5 minutes
   workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
@@ -21,13 +21,21 @@ jobs:
       - uses: Platane/snk@master
         id: snake-gif
         with:
-          github_user_name: Shiv@1309
+          github_user_name: Shiv1309  # Use your GitHub username without '@'
           # these next 2 lines generate the files on a branch called "output". This keeps the main branch from cluttering up.
           gif_out_path: dist/github-contribution-grid-snake.gif
           svg_out_path: dist/github-contribution-grid-snake.svg
 
       # Show the status of the build. Makes it easier for debugging (if there's any issues).
       - run: git status
+
+      # Commit changes to the output branch
+      - name: Commit changes
+        run: |
+          git config --local user.email "shivsingh1309@gmail.com"  # Your email
+          git config --local user.name "Shiv Kumar Singh"  # Your name
+          git add dist/github-contribution-grid-snake.gif dist/github-contribution-grid-snake.svg
+          git commit -m "Update contribution snake" || echo "No changes to commit"
 
       # Push the changes to the output branch
       - name: Push changes to output branch
@@ -38,7 +46,8 @@ jobs:
           force: true
 
       # Deploy to GitHub Pages
-      - uses: crazy-max/ghaction-github-pages@v2.1.3
+      - name: Deploy to GitHub Pages
+        uses: crazy-max/ghaction-github-pages@v2.1.3
         with:
           target_branch: output  # The branch where the snake files are pushed
           build_dir: dist
