@@ -1,22 +1,27 @@
-name: Generate Contribution Snake
+name: Generate Snake
 
 on:
-  push:
-    branches:
-      - master  # Change this to your main branch
+  schedule:
+    # Every 6 hours
+    - cron: "0 */6 * * *"
+  workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
-  generate-snake:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks repo under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      # Generates the snake
+      # Generates the snake  
       - uses: Platane/snk@master
         id: snake-gif
         with:
-          github_user_name: Shiv1431
+          github_user_name: Shiv@1309
           # these next 2 lines generate the files on a branch called "output". This keeps the main branch from cluttering up.
           gif_out_path: dist/github-contribution-grid-snake.gif
           svg_out_path: dist/github-contribution-grid-snake.svg
@@ -29,7 +34,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: output  # Change to 'output' if that's your target branch
+          branch: output  # Push to the output branch
           force: true
 
       # Deploy to GitHub Pages
