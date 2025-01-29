@@ -111,4 +111,5 @@
 
 <p>&nbsp;<img align="center" src="https://github-readme-stats.vercel.app/api?username=Shiv1431&show_icons=true&locale=en" alt="Shiv1431" /></p>
 
-<p><img align="center" src="https://github-readme-streak-stats.herokuapp.com/?user=Shiv1431" alt="Shiv1431" /></p>
+<p><img align="center" src="https://github-readme-streak-stats.vercel.app?user=Shiv1431" alt="Shiv1431" /></p>
+
